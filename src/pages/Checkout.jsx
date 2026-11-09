@@ -58,8 +58,9 @@ export default function Checkout() {
     setOrder(o);
   };
 
-  const Field = ({ k, label, ...rest }) => (
-    <div>
+  // A render helper (not a component) so inputs keep focus between keystrokes.
+  const renderField = ({ k, label, ...rest }) => (
+    <div key={k}>
       <label htmlFor={k} className="block text-sm font-medium mb-1">{label}</label>
       <input id={k} className={field} value={form[k]} onChange={set(k)} aria-invalid={!!errors[k]} aria-describedby={errors[k] ? k + '-err' : undefined} {...rest} />
       {errors[k] && <p id={k + '-err'} className="text-sm text-brand mt-1">{errors[k]}</p>}
@@ -75,10 +76,10 @@ export default function Checkout() {
       </div>
       <div className="mt-6 grid md:grid-cols-[1fr_340px] gap-6 items-start">
         <form onSubmit={submit} noValidate className="card p-5 grid gap-4">
-          <Field k="name" label="Full name" autoComplete="name" />
-          <Field k="phone" label="Mobile number" inputMode="numeric" autoComplete="tel" maxLength={10} />
-          <Field k="address" label="Delivery address" autoComplete="street-address" />
-          <Field k="pincode" label="Pincode" inputMode="numeric" autoComplete="postal-code" maxLength={6} />
+          {renderField({ k: 'name', label: 'Full name', autoComplete: 'name' })}
+          {renderField({ k: 'phone', label: 'Mobile number', inputMode: 'numeric', autoComplete: 'tel', maxLength: 10 })}
+          {renderField({ k: 'address', label: 'Delivery address', autoComplete: 'street-address' })}
+          {renderField({ k: 'pincode', label: 'Pincode', inputMode: 'numeric', autoComplete: 'postal-code', maxLength: 6 })}
           <fieldset>
             <legend className="text-sm font-medium mb-2">Payment method</legend>
             <div className="grid gap-2">

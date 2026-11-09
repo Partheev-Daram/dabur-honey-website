@@ -65,6 +65,17 @@ for (const [out, file, [l, t, w, h], max] of jobs) {
       <text x="${W * 0.5}" y="${Hh * 0.665}" font-size="${W * 0.045}" fill="#6b4a12">Squeezy · 400 g</text></g></svg>`;
     img = sharp(await img.toBuffer()).composite([{ input: Buffer.from(svg) }]);
   }
+  if (out === 'honeysnap-pack') {
+    // brand the plain red sachet (pack spans ≈ x 38–62%, y 9–91% of this quadrant)
+    const W = region.width, Hh = region.height;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${Hh}"><g text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-weight="700">
+      <rect x="${W * 0.405}" y="${Hh * 0.125}" width="${W * 0.19}" height="${Hh * 0.062}" rx="${Hh * 0.012}" fill="#fff"/>
+      <text x="${W * 0.5}" y="${Hh * 0.172}" font-size="${W * 0.04}" fill="#B3121B">Dabur</text>
+      <text x="${W * 0.5}" y="${Hh * 0.222}" font-size="${W * 0.04}" fill="#fff">Honey</text>
+      <text x="${W * 0.5}" y="${Hh * 0.862}" font-size="${W * 0.026}" fill="#fff" font-style="normal" letter-spacing="1">HONEYSNAP</text>
+      <text x="${W * 0.5}" y="${Hh * 0.893}" font-size="${W * 0.02}" fill="#fff" font-style="normal">10 g</text></g></svg>`;
+    img = sharp(await img.toBuffer()).composite([{ input: Buffer.from(svg) }]);
+  }
   await img.resize({ width: max, height: max, fit: 'inside', withoutEnlargement: true })
     .webp({ quality: 80 }).toFile(`public/images/${out}.webp`);
   const o = await sharp(`public/images/${out}.webp`).metadata();

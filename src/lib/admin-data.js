@@ -1,7 +1,7 @@
 // Admin data layer (prototype): localStorage-backed CMS + analytics helpers.
 // Production would replace these with API calls + a database.
-import { RECIPES, OCCASIONS } from '../data/recipes.js';
-import { PRODUCTS } from '../data/products.js';
+import { SEED_RECIPES as RECIPES, OCCASIONS, refreshRecipes } from '../data/recipes.js';
+import { SEED_PRODUCTS as PRODUCTS, refreshProducts } from '../data/products.js';
 
 export const CITIES = ['Delhi', 'Mumbai', 'Bengaluru', 'Hyderabad', 'Pune'];
 export const RECIPE_IMAGES = [
@@ -16,6 +16,8 @@ const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } cat
 
 export function resetAdminData() {
   try { Object.keys(localStorage).filter((k) => k.startsWith('dh_admin_')).forEach((k) => localStorage.removeItem(k)); } catch { /* ignore */ }
+  refreshRecipes();
+  refreshProducts();
 }
 
 // ---------- Recipes ----------  store: { [id]: recipe | { id, _deleted: true } }
@@ -32,11 +34,13 @@ export function saveRecipe(recipe) {
   const store = recipeStore();
   store[recipe.id] = { ...recipe, _deleted: false };
   save(K.recipes, store);
+  refreshRecipes();
 }
 export function deleteRecipe(id) {
   const store = recipeStore();
   if (RECIPES.some((r) => r.id === id)) store[id] = { id, _deleted: true }; else delete store[id];
   save(K.recipes, store);
+  refreshRecipes();
 }
 export const exportRecipesJSON = () => JSON.stringify(getAllRecipes(), null, 2);
 export function importRecipesJSON(text) {
@@ -45,6 +49,7 @@ export function importRecipesJSON(text) {
   const store = recipeStore();
   arr.forEach((r) => { if (r && r.id && r.title) store[r.id] = { ...r, _deleted: false }; });
   save(K.recipes, store);
+  refreshRecipes();
   return arr.length;
 }
 export const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -75,6 +80,7 @@ export function patchProduct(id, patch) {
   const s = productStore();
   s[id] = { ...(s[id] || {}), ...patch };
   save(K.products, s);
+  refreshProducts();
 }
 
 // ---------- Campaigns ----------

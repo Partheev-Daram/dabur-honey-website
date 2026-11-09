@@ -13,7 +13,7 @@ export const INGREDIENT_FILTERS = ['Bread', 'Banana', 'Oats', 'Milk', 'Yogurt', 
 
 const r = (o) => ({ difficulty: 'Easy', serves: 1, ...o });
 
-export const RECIPES = [
+const SEED = [
   r({
     id: 'honey-banana-toast', title: 'Honey Banana Toast', image: '/images/recipe-banana-toast.webp',
     occasions: ['breakfast', 'onthego', 'snacks'], time: 2, honey: '1 tsp', popularity: 98,
@@ -136,6 +136,29 @@ export const RECIPES = [
     steps: ['Mix a honey dough, roll thin and bake the layers.', 'Sandwich layers with sweetened cream and rest overnight.', 'Slice, drizzle with Dabur Honey and top with nuts.'],
   }),
 ];
+
+export const SEED_RECIPES = SEED;
+
+// Live catalogue: seed recipes merged with admin CMS edits (localStorage 'dh_admin_recipes').
+// Only published, non-deleted recipes appear on the public site. Mutated in place so existing imports stay valid.
+export const RECIPES = [];
+const ADMIN_KEY = 'dh_admin_recipes';
+export function refreshRecipes() {
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem(ADMIN_KEY) || '{}') || {}; } catch { store = {}; }
+  const seedIds = new Set(SEED.map((x) => x.id));
+  const merged = [...SEED.map((x) => ({ ...x, ...(store[x.id] || {}) })), ...Object.values(store).filter((x) => !seedIds.has(x.id))];
+  const live = merged
+    .filter((x) => !x._deleted && (x.status ?? 'published') === 'published' && x.title && (x.steps || []).length)
+    .map((x) => ({
+      difficulty: 'Easy', serves: 1, popularity: 50, occasions: [], ingredients: [], honey: '',
+      ...x, time: Number(x.time) || 5, serves: Number(x.serves) || 1,
+      image: x.image || '/images/cat-breakfast.webp',
+      steps: (x.steps || []).filter((t) => String(t).trim()),
+    }));
+  RECIPES.splice(0, RECIPES.length, ...live);
+}
+refreshRecipes();
 
 export const getRecipe = (idOrSlug) => RECIPES.find((x) => x.id === idOrSlug);
 export const getOccasion = (id) => OCCASIONS.find((o) => o.id === id);

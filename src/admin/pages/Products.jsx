@@ -10,7 +10,7 @@ export default function Products() {
   return (
     <>
       <PageHeader title="Products" sub="Availability and price. Stored in this browser (key dh_admin_products)." />
-      <Notice>Prototype: changes are stored in this browser; production would publish to the database. Cities are demo geographies.</Notice>
+      <Notice>Prototype: changes are stored in this browser; production would publish to the database. Price and availability changes apply to this browser's shop. City toggles are demo only.</Notice>
       <div className="grid gap-4 mt-4">
         {items.map((p) => (
           <article key={p.id} className="card p-4 flex flex-col md:flex-row gap-4">

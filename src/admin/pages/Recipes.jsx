@@ -36,7 +36,7 @@ export default function Recipes() {
         <input ref={file} type="file" accept="application/json" hidden onChange={doImport} />
       </PageHeader>
       <div className="space-y-3 mb-4">
-        <Notice>Prototype: changes are stored in this browser; production would publish to the database. Public pages still read the built-in recipe list.</Notice>
+        <Notice>Prototype: changes are stored in this browser; production would publish to the database. Published recipes appear on this browser's public site immediately; drafts and deleted recipes are hidden.</Notice>
         {msg && <Notice tone="warn">{msg}</Notice>}
       </div>
       <div className="grid gap-3">

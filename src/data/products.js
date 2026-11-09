@@ -1,5 +1,5 @@
 // Seed product catalogue. Prices/availability are illustrative and must be configured per geography at launch.
-export const PRODUCTS = [
+const SEED = [
   {
     id: 'honeysnap-10', name: 'Dabur HoneySnap', variant: '10 g × 10 packs', family: 'honeysnap', price: 99, mrp: 110,
     image: '/images/honeysnap-pack.webp', badge: 'NEW',
@@ -8,7 +8,7 @@ export const PRODUCTS = [
   },
   {
     id: 'honeysnap-30', name: 'Dabur HoneySnap', variant: '10 g × 30 packs', family: 'honeysnap', price: 279, mrp: 330,
-    image: '/images/honeysnap-angle.webp', badge: 'NEW',
+    image: '/images/honeysnap-pack.webp', badge: 'NEW',
     description: 'A month of single-serve honey in one pack.',
     available: true,
   },
@@ -19,6 +19,20 @@ export const PRODUCTS = [
     available: true,
   },
 ];
+export const SEED_PRODUCTS = SEED;
+
+// Live catalogue: seed products with admin overrides (price, availability) from localStorage 'dh_admin_products'.
+export const PRODUCTS = [];
+export function refreshProducts() {
+  let store = {};
+  try { store = JSON.parse(localStorage.getItem('dh_admin_products') || '{}') || {}; } catch { store = {}; }
+  PRODUCTS.splice(0, PRODUCTS.length, ...SEED.map((p) => {
+    const o = store[p.id] || {};
+    return { ...p, price: Number(o.price) || p.price, available: o.available ?? p.available };
+  }));
+}
+refreshProducts();
+
 export const PRODUCT_FILTERS = [
   { id: 'all', label: 'All Products' }, { id: 'squeezy', label: 'Squeezy' }, { id: 'honeysnap', label: 'HoneySnap' },
 ];
