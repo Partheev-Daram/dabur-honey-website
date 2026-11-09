@@ -52,7 +52,7 @@ function CookMode({ recipe, onClose }) {
         <span className="text-sm font-semibold text-ink-soft">{done ? 'Done' : `Step ${i + 1} of ${total}`}</span>
         <button type="button" aria-label="Exit cooking mode" onClick={onClose} className="w-11 h-11 grid place-items-center rounded-full bg-white border border-line"><X size={20} /></button>
       </div>
-      <div className="h-1.5 mx-4 rounded bg-line"><div className="h-full rounded bg-brand transition-all" style={{ width: `${(Math.min(i, total) / total) * 100}%` }} /></div>
+      <div className="h-1.5 mx-4 rounded bg-line"><div className="h-full rounded bg-brand transition-all" style={{ width: `${((done ? total : i + 1) / total) * 100}%` }} /></div>
       <div className="grow overflow-y-auto p-6 flex flex-col justify-center text-center items-center gap-5">
         {done ? (
           <>
